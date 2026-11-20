@@ -16,6 +16,8 @@ export const resetUsers = (): void => {
   nextId = 3
 }
 
+const parseId = (raw: string): number => (/^\d+$/.test(raw) ? Number(raw) : NaN)
+
 const NOT_FOUND = 'Utilisateur introuvable'
 
 export const users = new Hono()
@@ -23,7 +25,7 @@ export const users = new Hono()
 users.get('/', (c) => c.json(items))
 
 users.get('/:id', (c) => {
-  const user = items.find((u) => u.id === Number(c.req.param('id')))
+  const user = items.find((u) => u.id === parseId(c.req.param('id')))
   return user ? c.json(user) : fail(c, 404, NOT_FOUND)
 })
 
@@ -44,7 +46,7 @@ users.post('/', async (c) => {
 })
 
 users.delete('/:id', (c) => {
-  const id = Number(c.req.param('id'))
+  const id = parseId(c.req.param('id'))
   if (!items.some((u) => u.id === id)) return fail(c, 404, NOT_FOUND)
   items = items.filter((u) => u.id !== id)
   return c.body(null, 204)

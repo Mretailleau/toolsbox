@@ -23,6 +23,11 @@ describe('users', () => {
     expect(await res.json()).toEqual({ id: 1, name: 'Ada' })
   })
 
+  test('GET /users/0x1 returns 404', async () => {
+    const res = await app.request('/users/0x1')
+    expect(res.status).toBe(404)
+  })
+
   test('GET /users/999 returns 404 with error body', async () => {
     const res = await app.request('/users/999')
     expect(res.status).toBe(404)
