@@ -67,6 +67,15 @@ setup() {
   [ -e "$HOME/.claude/commands/new-react-app.md" ]
 }
 
+@test "links new-mock-api" {
+  run bash "$REPO/install.sh"
+  [ "$status" -eq 0 ]
+  [ -L "$HOME/.local/bin/new-mock-api" ]
+  [ -e "$HOME/.local/bin/new-mock-api" ]
+  [ -e "$HOME/.claude/commands/new-mock-api.md" ]
+  [ -L "$HOME/.local/bin/new-react-app" ]
+}
+
 @test "failed source gives exit 1 but settings still applied" {
   make_stub claude 1
   run bash "$REPO/install.sh"

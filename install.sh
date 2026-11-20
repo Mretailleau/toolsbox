@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Restaure un setup Claude Code : sources tierces, settings.json, CLAUDE.md, commande new-react-app.
+# Restaure un setup Claude Code : sources tierces, settings.json, CLAUDE.md, commandes new-react-app et new-mock-api.
 set -u
 
 REPO_DIR="$(cd "$(dirname "$0")" && pwd -P)"
@@ -63,11 +63,12 @@ copy_claude_md() {
 }
 run_step "CLAUDE.md" copy_claude_md
 
-link_new_react_app() {
-  ln -sfn "$REPO_DIR/commands/new-react-app.md" "$CLAUDE_DIR/commands/new-react-app.md" &&
-    ln -sfn "$REPO_DIR/bin/new-react-app" "$HOME/.local/bin/new-react-app"
+link_scaffolder() {
+  ln -sfn "$REPO_DIR/commands/$1.md" "$CLAUDE_DIR/commands/$1.md" &&
+    ln -sfn "$REPO_DIR/bin/$1" "$HOME/.local/bin/$1"
 }
-run_step "commande new-react-app" link_new_react_app
+run_step "commande new-react-app" link_scaffolder new-react-app
+run_step "commande new-mock-api" link_scaffolder new-mock-api
 
 if [ "$local_bin_in_path" -eq 0 ]; then
   echo "Ajoutez cette ligne à ~/.zshrc :"

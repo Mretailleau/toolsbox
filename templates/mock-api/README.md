@@ -27,4 +27,4 @@ Les imports relatifs prennent l'extension `.js` (ESM NodeNext).
 
 - `fail(c, status, message)` : réponse d'erreur `{ error: message }`, par ex. `return fail(c, 404, 'Introuvable')`.
 - `delay(ms)` : pause asynchrone, par ex. `await delay(300)` pour simuler un traitement lent.
-- `?delay=<ms>` : sur n'importe quelle URL, retarde la réponse (ex. `/users?delay=500`). Valeur ignorée si ce n'est pas un entier positif, plafonnée à 10 000 ms.
+- `?delay=<ms>` : sur n'importe quelle URL, retarde la réponse (ex. `/users?delay=500`). Valeur ignorée si ce n'est pas un entier ≥ 0, plafonnée à 10 000 ms.
