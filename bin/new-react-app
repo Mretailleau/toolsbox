@@ -12,16 +12,11 @@ done
 ROOT="$(cd "$(dirname "$src")/.." && pwd -P)"
 TEMPLATE="$ROOT/templates/react-app"
 
+# shellcheck source=../lib/scaffold.sh
+. "$ROOT/lib/scaffold.sh"
+
 name="${1:-}"
-if [[ ! "$name" =~ ^[a-z0-9][a-z0-9._-]*$ ]]; then
-  echo "Nom invalide : « $name ». Attendu : minuscules, chiffres, « . », « _ » ou « - », sans espace ni « / »." >&2
-  echo "Usage : new-react-app <nom-du-projet>" >&2
-  exit 1
-fi
-if [ -e "$name" ]; then
-  echo "Le dossier « $name » existe déjà." >&2
-  exit 1
-fi
+validate_project_name "$name" new-react-app || exit 1
 if [ ! -d "$TEMPLATE" ]; then
   echo "Gabarit introuvable : $TEMPLATE" >&2
   exit 1
@@ -45,14 +40,7 @@ grep -q 'vitest/globals' tsconfig.app.json || {
   exit 1
 }
 
-git init -q
-git add -A
-if [ -n "$(git config user.email || true)" ]; then
-  git commit -qm "chore: scaffold $name"
-else
-  git -c user.name="new-react-app" -c user.email="new-react-app@localhost" \
-    commit -qm "chore: scaffold $name"
-fi
+initial_commit "chore: scaffold $name" new-react-app
 
 echo
 echo "Projet « $name » créé. Pour démarrer :"
