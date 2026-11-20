@@ -1,6 +1,6 @@
 # toolsbox
 
-Restaure en une commande un setup Claude Code sur une nouvelle machine : plugins, skills, réglages et hooks. Le dépôt fournit aussi `new-react-app`, deux générateurs de projet : `new-react-app` (React) et `new-mock-api` (serveur d'API factice Hono).
+Restaure en une commande un setup Claude Code sur une nouvelle machine : plugins, skills, réglages et hooks. Le dépôt fournit aussi deux générateurs de projet : `new-react-app` (React) et `new-mock-api` (serveur d'API factice Hono).
 
 ## Prérequis
 
