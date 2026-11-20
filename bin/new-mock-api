@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+# Crée un serveur de mock Node + TypeScript (Hono) avec routes GET/POST/DELETE.
+set -euo pipefail
+
+# Résout les liens symboliques (portable : pas de readlink -f sur macOS).
+src="${BASH_SOURCE[0]}"
+while [ -L "$src" ]; do
+  dir="$(cd "$(dirname "$src")" && pwd -P)"
+  src="$(readlink "$src")"
+  case "$src" in /*) ;; *) src="$dir/$src" ;; esac
+done
+ROOT="$(cd "$(dirname "$src")/.." && pwd -P)"
+TEMPLATE="$ROOT/templates/mock-api"
+
+# shellcheck source=../lib/scaffold.sh
+. "$ROOT/lib/scaffold.sh"
+
+name="${1:-}"
+validate_project_name "$name" new-mock-api || exit 1
+if [ ! -d "$TEMPLATE" ]; then
+  echo "Gabarit introuvable : $TEMPLATE" >&2
+  exit 1
+fi
+
+mkdir "$name" && cp -R "$TEMPLATE/." "$name"
+cd "$name"
+npm pkg set name="$name"
+
+npm i hono @hono/node-server
+npm i -D typescript tsx vitest @types/node
+
+initial_commit "chore: scaffold $name" new-mock-api
+
+echo
+echo "Projet « $name » créé. Pour démarrer :"
+echo "cd $name && npm run dev"
+echo "Puis ouvre http://localhost:3000/users"
