@@ -1,0 +1,7 @@
+# type      argument(s)
+ecc         minimal
+plugin      superpowers@claude-plugins-official
+plugin      mattpocock-skills@claude-plugins-official
+skills      vercel-labs/agent-skills vercel-react-best-practices
+skills      Jeffallan/claude-skills react-expert
+graphify    graphifyy

@@ -1,0 +1,12 @@
+{
+  "name": "toolsbox",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Restaure un setup Claude Code sur une nouvelle machine",
+  "scripts": {
+    "test": "bats tests"
+  },
+  "devDependencies": {
+    "bats": "^1.11.0"
+  }
+}

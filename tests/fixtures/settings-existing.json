@@ -1,0 +1,8 @@
+{
+  "model": "sonnet",
+  "permissions": {"allow": ["Bash(ls)"]},
+  "enabledPlugins": {"ecc@ecc": true},
+  "hooks": {
+    "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": "other"}]}]
+  }
+}

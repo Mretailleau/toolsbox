@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Crée un projet React + TypeScript + Vitest + React Router + Tailwind.
+set -euo pipefail
+
+# Résout les liens symboliques (portable : pas de readlink -f sur macOS).
+src="${BASH_SOURCE[0]}"
+while [ -L "$src" ]; do
+  dir="$(cd "$(dirname "$src")" && pwd -P)"
+  src="$(readlink "$src")"
+  case "$src" in /*) ;; *) src="$dir/$src" ;; esac
+done
+ROOT="$(cd "$(dirname "$src")/.." && pwd -P)"
+TEMPLATE="$ROOT/templates/react-app"
+
+name="${1:-}"
+if [[ ! "$name" =~ ^[a-z0-9][a-z0-9._-]*$ ]]; then
+  echo "Nom invalide : « $name ». Attendu : minuscules, chiffres, « . », « _ » ou « - », sans espace ni « / »." >&2
+  echo "Usage : new-react-app <nom-du-projet>" >&2
+  exit 1
+fi
+if [ -e "$name" ]; then
+  echo "Le dossier « $name » existe déjà." >&2
+  exit 1
+fi
+if [ ! -d "$TEMPLATE" ]; then
+  echo "Gabarit introuvable : $TEMPLATE" >&2
+  exit 1
+fi
+
+npm create vite@latest "$name" -- --template react-ts --no-interactive
+cd "$name"
+
+npm i react-router
+npm i -D tailwindcss @tailwindcss/vite vitest @vitest/coverage-v8 jsdom \
+  @testing-library/react @testing-library/jest-dom @testing-library/user-event
+
+cp -R "$TEMPLATE/." .
+rm -f src/App.tsx src/App.css src/assets/react.svg
+
+npm pkg set scripts.test="vitest" scripts.test:coverage="vitest run --coverage"
+sed 's#"types": \["vite/client"\]#"types": ["vite/client", "vitest/globals", "@testing-library/jest-dom"]#' \
+  tsconfig.app.json > tsconfig.app.json.tmp && mv tsconfig.app.json.tmp tsconfig.app.json
+grep -q 'vitest/globals' tsconfig.app.json || {
+  echo "tsconfig.app.json : format inattendu, types Vitest non ajoutés" >&2
+  exit 1
+}
+
+git init -q
+git add -A
+if [ -n "$(git config user.email || true)" ]; then
+  git commit -qm "chore: scaffold $name"
+else
+  git -c user.name="new-react-app" -c user.email="new-react-app@localhost" \
+    commit -qm "chore: scaffold $name"
+fi
+
+echo
+echo "Projet « $name » créé. Pour démarrer :"
+echo "cd $name && npm run dev"
